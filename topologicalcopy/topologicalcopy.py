@@ -41,7 +41,8 @@ Gstr_synopsis = """
             [--version]                                                
             <outputDir> 
             [--plugininstances <instances>]                            
-            [-f <filter>] [--filter <filter>]                          
+            [-f <filter>] [--filter <filter>]  
+            [-g] [--groupByInstance]                         
 
     BRIEF EXAMPLE
 
@@ -85,6 +86,10 @@ Gstr_synopsis = """
         [-f <filter>] [--filter <filter>]
         If specified, it's a string representing a comma-separated list of regular 
         expressions.
+        
+        [-g] [--groupByInstance] 
+        If specified then an output directory is created for each input plugin instance 
+        within this plugin app's output path
 """
 
 
@@ -97,14 +102,12 @@ class TopologicalCopy(ChrisApp):
     CATEGORY                = 'utility'
     TYPE                    = 'ts'
     ICON                    = '' # url of an icon image
-    MAX_NUMBER_OF_WORKERS   = 1  # Override with integer value
-    MIN_NUMBER_OF_WORKERS   = 1  # Override with integer value
-    MAX_CPU_LIMIT           = '' # Override with millicore value as string, e.g. '2000m'
-    MIN_CPU_LIMIT           = '' # Override with millicore value as string, e.g. '2000m'
-    MAX_MEMORY_LIMIT        = '' # Override with string, e.g. '1Gi', '2000Mi'
-    MIN_MEMORY_LIMIT        = '' # Override with string, e.g. '1Gi', '2000Mi'
-    MIN_GPU_LIMIT           = 0  # Override with the minimum number of GPUs, as an integer, for your plugin
-    MAX_GPU_LIMIT           = 0  # Override with the maximum number of GPUs, as an integer, for your plugin
+    MIN_NUMBER_OF_WORKERS   = 1    # Override with the minimum number of workers as int
+    MAX_NUMBER_OF_WORKERS   = 1    # Override with the maximum number of workers as int
+    MIN_CPU_LIMIT           = 1000 # Override with millicore value as int (1000 millicores == 1 CPU core)
+    MIN_MEMORY_LIMIT        = 200  # Override with memory MegaByte (MB) limit as int
+    MIN_GPU_LIMIT           = 0    # Override with the minimum number of GPUs as int
+    MAX_GPU_LIMIT           = 0    # Override with the maximum number of GPUs as int
 
     # Use this dictionary structure to provide key-value output descriptive information
     # that may be useful for the next downstream plugin. For example:
@@ -134,6 +137,7 @@ class TopologicalCopy(ChrisApp):
         print('Version: %s' % self.get_version())
         print('Plugin instance ids: %s' % options.plugininstances)
         print('Filter: %s' % options.filter)
+        print('Group by instance: %s' % options.groupByInstance)
 
     def show_man_page(self):
         """
