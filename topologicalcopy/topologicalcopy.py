@@ -1,4 +1,4 @@
-#!/usr/bin/env python                                            
+#!/usr/bin/env python
 #
 # topologicalcopy ts ChRIS plugin app
 #
@@ -10,50 +10,65 @@
 #
 
 from chrisapp.base import ChrisApp
+import  time
+from    loguru                  import logger
+LOG             = logger.debug
+
+logger_format = (
+    "<green>{time:YYYY-MM-DD HH:mm:ss}</green> │ "
+    "<level>{level: <5}</level> │ "
+    "<yellow>{name: >28}</yellow>::"
+    "<cyan>{function: <30}</cyan> @"
+    "<cyan>{line: <4}</cyan> ║ "
+    "<level>{message}</level>"
+)
+logger.remove()
+logger.opt(colors = True)
+logger.add(sys.stderr, format=logger_format)
 
 
 Gstr_title = """
- _                    _             _           _                       
-| |                  | |           (_)         | |                      
-| |_ ___  _ __   ___ | | ___   __ _ _  ___ __ _| | ___ ___  _ __  _   _ 
+ _                    _             _           _
+| |                  | |           (_)         | |
+| |_ ___  _ __   ___ | | ___   __ _ _  ___ __ _| | ___ ___  _ __  _   _
 | __/ _ \| '_ \ / _ \| |/ _ \ / _` | |/ __/ _` | |/ __/ _ \| '_ \| | | |
 | || (_) | |_) | (_) | | (_) | (_| | | (_| (_| | | (_| (_) | |_) | |_| |
  \__\___/| .__/ \___/|_|\___/ \__, |_|\___\__,_|_|\___\___/| .__/ \__, |
          | |                   __/ |                       | |     __/ |
-         |_|                  |___/                        |_|    |___/ 
+         |_|                  |___/                        |_|    |___/
 """
 
 Gstr_synopsis = """
 
     NAME
 
-       topologicalcopy.py 
+       topologicalcopy.py
 
     SYNOPSIS
 
-        python topologicalcopy.py                                        
-            [-h] [--help]                                               
-            [--json]                                                   
-            [--man]                                                   
-            [--meta]                                                    
-            [--savejson <DIR>]                                        
-            [-v <level>] [--verbosity <level>]                         
-            [--version]                                                
-            <outputDir> 
-            [--plugininstances <instances>]                            
-            [-f <filter>] [--filter <filter>]  
-            [-g] [--groupByInstance]                         
+        python topologicalcopy.py
+            [-h] [--help]
+            [--json]
+            [--man]
+            [--meta]
+            [--savejson <DIR>]
+            [-v <level>] [--verbosity <level>]
+            [--version]
+            <outputDir>
+            [--plugininstances <instances>]
+            [-f <filter>] [--filter <filter>]
+            [-g] [--groupByInstance]
 
     BRIEF EXAMPLE
 
         * Bare bones execution
 
             docker run --rm -u $(id -u) -v $(pwd)/out:/outgoing \
-                fnndsc/pl-topologicalcopy topologicalcopy /outgoing    
+                fnndsc/pl-topologicalcopy topologicalcopy /outgoing
 
     DESCRIPTION
 
-        `topologicalcopy.py` is a ts app to copy filtered output directories from many 
+        `topologicalcopy.py` is a ts app to copy filtered output directories from many
         input plugin instances.
 
     ARGS
@@ -70,25 +85,25 @@ Gstr_synopsis = """
         [--meta]
         If specified, print plugin meta data and exit.
 
-        [--savejson <DIR>] 
-        If specified, save json representation file to DIR and exit. 
+        [--savejson <DIR>]
+        If specified, save json representation file to DIR and exit.
 
         [-v <level>] [--verbosity <level>]
         Verbosity level for app. Not used currently.
 
         [--version]
-        If specified, print version number and exit. 
+        If specified, print version number and exit.
 
-        [--plugininstances <instances>] 
-        If specified, it's a string representing a comma-separated list of plugin 
+        [--plugininstances <instances>]
+        If specified, it's a string representing a comma-separated list of plugin
         instance ids.
 
         [-f <filter>] [--filter <filter>]
-        If specified, it's a string representing a comma-separated list of regular 
+        If specified, it's a string representing a comma-separated list of regular
         expressions.
-        
-        [-g] [--groupByInstance] 
-        If specified then an output directory is created for each input plugin instance 
+
+        [-g] [--groupByInstance]
+        If specified then an output directory is created for each input plugin instance
         within this plugin app's output path
 """
 
@@ -122,6 +137,24 @@ class TopologicalCopy(ChrisApp):
     # output directory.
     OUTPUT_META_DICT = {}
 
+    def preamble_show(self, options) -> None:
+        """
+        Just show some preamble "noise" in the output terminal
+        """
+
+        LOG(Gstr_title)
+        LOG('Version: %s' % self.get_version())
+
+        LOG("plugin arguments...")
+        for k,v in options.__dict__.items():
+             LOG("%25s:  [%s]" % (k, v))
+        LOG("")
+
+        LOG("base environment...")
+        for k,v in os.environ.items():
+             LOG("%25s:  [%s]" % (k, v))
+        LOG("")
+
     def define_parameters(self):
         """
         Define the CLI arguments accepted by this plugin app.
@@ -133,11 +166,10 @@ class TopologicalCopy(ChrisApp):
         """
         Define the code to be run by this plugin app.
         """
-        print(Gstr_title)
-        print('Version: %s' % self.get_version())
-        print('Plugin instance ids: %s' % options.plugininstances)
-        print('Filter: %s' % options.filter)
-        print('Group by instance: %s' % options.groupByInstance)
+        st: float = time.time()
+        self.preamble_show(options)
+        et: float = time.time()
+        LOG("Execution time: %f seconds." % (et -st))
 
     def show_man_page(self):
         """
