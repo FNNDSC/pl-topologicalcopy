@@ -10,7 +10,7 @@
 #
 
 from chrisapp.base import ChrisApp
-import  time
+import  time, sys
 from    loguru                  import logger
 LOG             = logger.debug
 
