@@ -12,6 +12,7 @@
 from chrisapp.base import ChrisApp
 import  time, sys, os
 from    loguru                  import logger
+from pflog import pflog
 LOG             = logger.debug
 
 logger_format = (
@@ -161,7 +162,10 @@ class TopologicalCopy(ChrisApp):
         Use self.add_argument to specify a new app argument.
         """
         pass
-
+    @pflog.tel_logTime(
+            event       = 'topologicalcopy',
+            log         = 'Copy filtered output dirs from a list of plugin instances'
+    )
     def run(self, options):
         """
         Define the code to be run by this plugin app.
