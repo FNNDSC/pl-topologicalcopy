@@ -161,7 +161,12 @@ class TopologicalCopy(ChrisApp):
         Define the CLI arguments accepted by this plugin app.
         Use self.add_argument to specify a new app argument.
         """
-        pass
+        self.add_argument('--pftelDB',
+                          dest='pftelDB',
+                          type=str,
+                          optional=True,
+                          help="an optional pftel telemetry logger, of form '<pftelURL>/api/v1/<object>/<collection>/<event>'",
+                          default='')
     @pflog.tel_logTime(
             event       = 'topologicalcopy',
             log         = 'Copy filtered output dirs from a list of plugin instances'
