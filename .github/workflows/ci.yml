@@ -121,9 +121,12 @@ jobs:
           docker tag localhost:5000/$dock_image $dock_image
           script=$(docker inspect --format '{{ (index .Config.Cmd 0) }}' $dock_image)
           json="$(docker run --rm $dock_image $script --json)"
+          # Escape single quotes
+          json_escaped=$(echo "$json" | sed "s/'/\\'/g")
+
           jq <<< "$json"  # pretty print in log
 
-          echo "::set-output name=json::$json"
+          echo "::set-output name=json::$json_escaped"
           echo "::set-output name=title::$(jq -r '.title' <<< "$json")"
 
       - name: Update DockerHub description
