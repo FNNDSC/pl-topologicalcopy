@@ -22,7 +22,7 @@ on:
 jobs:
   test:
     if: false
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v2
       - name: build
@@ -32,7 +32,7 @@ jobs:
 
   publish:
     if: github.event_name == 'push' || github.event_name == 'release'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
 
     # we want to both push the build to DockerHub, but also
     # keep a local copy so that we can run
