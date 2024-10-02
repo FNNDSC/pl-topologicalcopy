@@ -125,9 +125,8 @@ jobs:
           json_escaped=$(echo "$json" | sed "s/'/\\'/g")
 
           jq <<< "$json"  # pretty print in log
-
-          echo "::set-output name=json::$json_escaped"
-          echo "::set-output name=title::$(jq -r '.title' <<< "$json")"
+          echo "json=$json_escaped" >> $GITHUB_OUTPUT
+          echo "title=$(jq -r '.title' <<< "$json")" >> $GITHUB_OUTPUT
 
       - name: Update DockerHub description
         uses: peter-evans/dockerhub-description@v2

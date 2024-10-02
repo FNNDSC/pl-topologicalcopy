@@ -6,12 +6,12 @@ with open(path.join(path.dirname(path.abspath(__file__)), 'README.rst')) as f:
 
 setup(
     name             = 'topologicalcopy',
-    version          = '1.0.4',
+    version          = '1.0.5',
     description      = 'A plugin ts app to copy filtered output dirs from a list of plugin instances',
     long_description = readme,
     author           = 'FNNDSC',
     author_email     = 'dev@babyMRI.org',
-    url              = 'http://wiki',
+    url              = 'https://github.com/FNNDSC/pl-topologicalcopy#readme',
     packages         = ['topologicalcopy'],
     install_requires = ['chrisapp'],
     test_suite       = 'nose.collector',
