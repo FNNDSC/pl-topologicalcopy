@@ -120,6 +120,7 @@ jobs:
           docker pull localhost:5000/$dock_image
           docker tag localhost:5000/$dock_image $dock_image
           script=$(docker inspect --format '{{ (index .Config.Cmd 0) }}' $dock_image)
+          docker run --rm $dock_image $script --json > /tmp/description.json
           json="$(docker run --rm $dock_image $script --json)"
           # Escape single quotes
           json_escaped=$(echo "$json" | sed "s/'/\\'/g")
@@ -143,7 +144,7 @@ jobs:
         if: github.ref_type == 'tag'
         uses: FNNDSC/upload-chris-plugin@main
         with:
-          description_json: ${{ steps.pluginmeta.outputs.json }}
+          description_file: /tmp/description.json
           username: ${{ secrets.CHRISPROJECT_USERNAME }}
           password: ${{ secrets.CHRISPROJECT_PASSWORD }}
           chris_url: https://cube.chrisproject.org/api/v1/
