@@ -141,7 +141,7 @@ jobs:
       - name: Upload ChRIS Plugin
         id: upload
         if: github.ref_type == 'tag'
-        uses: FNNDSC/upload-chris-plugin@v1
+        uses: FNNDSC/upload-chris-plugin@main
         with:
           description_json: ${{ steps.pluginmeta.outputs.json }}
           username: ${{ secrets.CHRISPROJECT_USERNAME }}
