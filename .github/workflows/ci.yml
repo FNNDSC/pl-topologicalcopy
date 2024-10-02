@@ -121,7 +121,7 @@ jobs:
           docker tag localhost:5000/$dock_image $dock_image
           script=$(docker inspect --format '{{ (index .Config.Cmd 0) }}' $dock_image)
           docker run --rm $dock_image $script --json \
-            | jq '. += {"name":"pl-topologicalcopy", "dock_image": "$dock_image", "public_repo": "$repo" }' \
+            | jq '. += {"name":"pl-topologicalcopy", "dock_image": "'$dock_image'", "public_repo": "'$repo'" }' \
             > /tmp/description.json
           json="$(docker run --rm $dock_image $script --json)"
           # Escape single quotes
