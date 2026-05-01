@@ -14,10 +14,10 @@ name: ci
 on:
   push:
     # we have to guess what the name of the default branch is
-    branches: [ master, main, trunk ]
-    tags: [ '**' ]
+    branches: [master, main, trunk]
+    tags: ["**"]
   pull_request:
-    branches: [ master, main, trunk ]
+    branches: [master, main, trunk]
 
 jobs:
   test:
@@ -66,17 +66,17 @@ jobs:
           echo "::set-output name=dock_image::$dock_image"
           echo "::set-output name=repo::$repo"
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       # QEMU is for emulating non-x86_64 platforms
-      - uses: docker/setup-qemu-action@v1
+      - uses: docker/setup-qemu-action@v4
       # buildx is the next-generation docker image builder
-      - uses: docker/setup-buildx-action@v1
+      - uses: docker/setup-buildx-action@v4
         with:
           driver-opts: network=host
       # save some time during rebuilds
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -85,20 +85,20 @@ jobs:
 
       - name: Login to DockerHub
         id: dockerhub_login
-        uses: docker/login-action@v1
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v7
         id: docker_build
         with:
           context: .
@@ -132,8 +132,8 @@ jobs:
           echo "title=$(jq -r '.title' <<< "$json")" >> $GITHUB_OUTPUT
 
       - name: Update DockerHub description
-        uses: peter-evans/dockerhub-description@v2
-        continue-on-error: true  # it is not crucial that this works
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa #v5.0.0
+        continue-on-error: true # it is not crucial that this works
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
